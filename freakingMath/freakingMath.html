@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+
+***************************************************************************************
+*                                                                                     *
+* This game is developed by: java_eng, a learner from SoloLearn.com, Inspired by:     *
+*                                                                                     *
+* the awesome game "freaking math" which developed by: Nguyen Loung Bang.             *
+*                                                                                     *
+* Feel free to edit the code and to make it better for your personal usages,          *
+* please don't just copy and paste it.                                                *
+*                                                                                     *
+* Credits for:                                                                        *
+* Nguyen Loung Bang                                                                   *
+*       
+* Date Modified: 22nd December 2019                                                   *                          *
+***************************************************************************************
+
+-->
+
+<head>
+    <title>freaking math</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="@java_eng" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.js " crossorigin="anonymous ">
+    </script>
+
+    <!--Custom CSS-->
+    <link type="text/css" href="./freakingStyle.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="pop_up" style=" display: none;">
+            <!-- Appears when game is over -->
+
+            <table class="table">
+                <tr>
+                    <td style="font-size: 30px; font-family:monospace; color: white; font-weight: bolder;">
+                        Game Over!
+                    </td>
+                </tr>
+                <tr>
+                    <td id="showScore" style="font-size: 20px; font-family:monospace; color: white; ">
+                        Score:
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="showHighestScore" style="font-size: 20px; font-family:monospace; color: white; ">
+                        Highest:
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 16px; font-family:monospace; color: white;">
+                        do you want to play again ?
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        <input id="newGameY" type="button" value="Yes :)" />
+                        <input id="newGameN" type="button" value="No :/" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!--level selectro-->
+        <div class="levelSelector" style="display: none">
+            <button id="easyLvl" style="display: block;">easy</button>
+            <button id="mediumLvl" style="display: block">medium</button>
+            <button id="masterLvl" style="display: block">master</button>
+        </div>
+
+        <!--progress bar-->
+        <div class="progress">
+            <div class="progressBar"></div>
+        </div>
+        <button id="newGameB" type="button" value="new_game" style="display:none;">New Game <i style="margin-left: 7px;"
+                class="fas fa-gamepad"></i></button>
+        <button id="levelButton" style="display:none ">Level <i style="margin-left: 7px;"
+                class="fas fa-angle-double-up"></i></button>
+        <button id="speaker" style="display:none;"><i class="fas fa-volume-up"></i></button>
+
+
+        <div class="innerDiv">
+            <table class="table">
+                <tr>
+                    <td colspan="2">
+                        <p id="score">Score: 0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+
+                        <span id="num1">0</span>
+                        <span id="plus">+</span>
+                        <span id="num2">0</span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p id="sum" style="margin-bottom: 10vh">= 0</p>
+
+                    </td>
+                </tr>
+
+
+                <table class="table">
+                    <tr>
+                        <td rowspan="3">
+                            <button id="yes" type="button" value="new_game" style="font-size: 20px;">Yes <i
+                                    class="fas fa-grin-alt"></i> </button>
+                        </td>
+                        <td rowspan="3">
+                            <button id="no" type="button" value="new_game" style="font-size: 20px;">No <i
+                                    class="fas fa-frown"></i></button>
+                        </td>
+                    </tr>
+
+                </table>
+            </table>
+
+
+
+        </div>
+
+
+    </div>
+
+    <script type="text/javascript" src="./freakingMath.js"></script>
+</body>
+
+</html>

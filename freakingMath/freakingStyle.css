@@ -1,0 +1,244 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    position: relative;
+    height: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    background-color: crimson;
+}
+
+.innerDiv {
+    top: 10%;
+    position: relative;
+    background: transparent;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+.table {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#newGameB {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    width: 50%;
+    height: 10%;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    color: darkmagenta;
+    background-color: white;
+    top: 31%;
+    left: 25%;
+}
+
+#num1,
+#num2,
+#sum,
+#plus,
+#score {
+    font-size: 45px;
+    font-family: monospace;
+    color: white;
+}
+
+#num1,
+#num2,
+#plus {
+    margin: 15px;
+}
+
+#yes {
+    color: lime;
+    margin: 15px;
+    width: 25vw;
+    height: 10vh;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#no {
+    color: crimson;
+    margin: 15px;
+    width: 25vw;
+    height: 10vh;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.progress {
+    width: 100%;
+    height: 22px;
+    background-color: white;
+}
+
+.progressBar {
+    width: 0%;
+    height: 22px;
+    background-color: yellowgreen;
+}
+
+.pop_up {
+    position: absolute;
+    margin-top: 25vh;
+    margin-left: 10vw;
+    /* margin-left = (100 - width)/2 */
+    width: 80vw;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+#newGameY {
+    font-size: 14px;
+    font-family: monospace;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 15px;
+    color: yellowgreen;
+    width: 7rem;
+    height: 2rem;
+    border: none;
+    border-radius: 3px;
+    background-color: white;
+}
+
+#newGameN {
+    font-size: 14px;
+    font-family: monospace;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 15px;
+    color: crimson;
+    width: 7rem;
+    height: 2rem;
+    border: none;
+    border-radius: 3px;
+    background-color: white;
+}
+
+.levelSelector {
+    position: absolute;
+    margin-top: 25vh;
+    margin-left: 10vw;
+    /* margin-left = (100 - width)/2 */
+    padding: 5px;
+    width: 80vw;
+    height: 210px;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: 1000;
+    border: none;
+    border-radius: 5px;
+}
+
+#levelButton {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    padding: 5px;
+    width: 50%;
+    height: 10%;
+    border: none;
+    border-radius: 5px;
+    color: royalblue;
+    background-color: white;
+    top: 45%;
+    left: 25%;
+}
+
+#easyLvl {
+    font-family: monospace;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    position: relative;
+    width: 100%;
+    height: 70px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: solid 1px white;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
+
+#mediumLvl {
+    font-family: monospace;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    position: relative;
+    width: 100%;
+    height: 70px;
+    border: solid 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: solid 1px white;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
+
+#masterLvl {
+    font-family: monospace;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    position: relative;
+    width: 100%;
+    height: 70px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+}
+
+#speaker {
+    position: absolute;
+    font-size: 40px;
+    width: 50%;
+    height: 10%;
+    color: orangered;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    top: 60%;
+    left: 25%;
+}
+
+@media only screen and (min-height:440px) and (max-height:480px) {
+
+    /* fix for smaller screens */
+    .pop_up {
+        height: 250px;
+    }
+
+    .innerDiv {
+        top: 0%;
+    }
+}
+
+@media only screen and (min-height:481px) and (max-height:720px) {
+
+    /* fix for smaller screens */
+    .pop_up {
+        height: 250px;
+    }
+
+    .innerDiv {
+        top: 8%;
+    }
+}
