@@ -1,0 +1,335 @@
+@charset "utf-8";
+ @import url('https://fonts.googleapis.com/css2?family=Baloo+2&display=swap'); 
+
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0%;
+}
+
+.welcomeBanner {
+    /* display: none; */
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to top, rgba(167, 112, 239, 0.7), rgba(107, 26, 75, 0.8), rgba(60, 16, 83, 0.97)80%), url('file:///home/inspiron/Desktop/WebGame/resources/xoPattern.png');
+    /* background-size: cover; */
+    background-repeat: no-repeat;
+    background-position: center;
+
+
+}
+
+#welcomeMessage {
+    font-family: 'Baloo 2', cursive;
+}
+
+.flexRow>button {
+    font-family: 'Baloo 2', cursive;
+    font-size: 20px;
+    font-weight: bold;
+    width: 10%;
+    /* idk but this config prevents flex wrap property! */
+    background-color: thistle;
+    /* background: linear-gradient(to right, rgb(167, 112, 239), rgb(207, 139, 243), rgb(253, 185, 155)); */
+    /* border: 3px; can't be apply due to border-radius
+        border-color: rgb(167, 112, 239); can't be apply due to border-radius
+    */
+
+
+    /* fix this when you come to compatability with browsers! */
+    border: none;
+    /* outline: solid 2px rgb(167, 112, 239); */
+    /* outline-color: rgba(101, 56, 160, 0.5);
+    -moz-outline-radius: 16px; */
+    border-radius: 15px;
+    height: 100%;
+    /* height of parent */
+
+}
+
+/* Grid Items animations and transforms  */
+
+
+#welcomeMessage {
+    position: relative;
+    top: 0%;
+    /* flex-basis: for the elemnt default size */
+    /* align-self: center; */
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 0;
+    /* flex: auto; */
+    margin: 2%;
+    padding-top: 50px;
+    font-size: 40px;
+    color: white;
+
+    /* Transitions and animations */
+    animation-name: welcomeScreenAnimations;
+    animation-duration: 1s;
+    animation-delay: 0s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: backwards;
+
+}
+
+/* Buttons transitions */
+#newGame {
+
+    transition: width 0.5s;
+    -moz-transition: background-color 0.5s;
+    -webkit-transition: background-color 0.5s;
+    background-color: rgba(107, 26, 75, 0.9);
+    color: white;
+
+}
+
+#newGame:hover {
+    background-color: white;
+    color: rgba(107, 26, 75, 0.9);
+    /* top: -7%;  small effect if you like*/
+}
+
+#highScore {
+    transition: background-color 0.5s;
+    -moz-transition: background-color 0.5s;
+    -webkit-transition: background-color 0.5s;
+    /* transition-delay: 5s; */
+}
+
+#highScore:hover {
+    background-color: rgba(107, 26, 75, 0.9);
+    color: white;
+    /* top: -7%; small effect if you like */
+
+
+}
+
+
+
+.flexRow {
+    height: 30%;
+    width: 30%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    flex-flow: wrap row;
+    text-align: center;
+    justify-content: center;
+    margin: auto;
+}
+
+.flexColumn {
+    /* belongs to welcome banner! */
+    position: relative;
+    top: 5%;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    flex-flow: column nowrap;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding-top: 12%;
+
+
+
+}
+
+
+
+
+#newGame {
+    position: relative;
+    top: 0%;
+    flex-basis: main-size;
+    /* flex-basis: for the elemnt default size */
+    align-self: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 0;
+    /* flex: auto; */
+
+    /* Transsitions and Animations */
+    animation-name: newGameButton;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+}
+
+#highScore {
+    position: relative;
+    top: 0%;
+    flex-basis: main-size;
+    /* flex-basis: for the elemnt default size */
+    align-self: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    order: 1;
+    /* flex: auto; */
+    margin: 2%;
+
+    /* Transsitions and Animations */
+
+    animation-name: highScoresButton;
+    animation-duration: 1s;
+    animation-delay: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+
+
+}
+
+/* @ UI Animations */
+@keyframes welcomeScreenAnimations {
+    from {
+        top: -30%;
+        color: rgba(107, 26, 75, 0.9);
+
+    }
+
+    to {
+        top: 0%;
+        color: white;
+    }
+}
+
+@keyframes newGameButton {
+    from {
+        top: -30%;
+        opacity: 0;
+    }
+
+    to {
+        top: 0%;
+        opacity: 1;
+    }
+}
+
+@keyframes highScoresButton {
+    from {
+        top: -30%;
+        opacity: 0;
+    }
+
+    to {
+        top: 0%;
+        opacity: 1;
+    }
+}
+
+
+/* highscoresview */
+.highScoresView {
+    /* posistioning */
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    /* margin: auto; */
+    text-align: center;
+    /* display */
+    /* display: none; */
+    visibility: hidden;
+
+
+    /* polishing */
+    background-color: rgba(255, 255, 255, 0.125);
+    backdrop-filter: blur(10px);
+    border-radius: 7px;
+
+
+    /*absolute div centering, replaced with JS code*/
+    /* left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30vw; */
+    width: 30vw;
+
+    /* Need a specific value to work */
+    /* height: 40vh; */
+    padding: 10vh;
+    /* margin-top: -135px;
+    margin-left: -200px; */
+
+}
+
+.highScoresView>ul {
+    font-family: monospace;
+    font-size: 24px;
+    text-align: left;
+    color: white;
+    text-decoration: none;
+    list-style: none;
+}
+
+.highScoresView button {
+    border: none;
+    border-radius: 4px;
+    background-color: white;
+    color: indigo;
+    font-size: 16px;
+    font-weight: bold;
+    width: 40%;
+    padding: 15px;
+    /* transition */
+    transition-property: background-color, color;
+    transition-duration: 0.3s;
+    transition-delay: 0s;
+    transition-timing-function: linear;
+
+}
+
+.highScoresView button:hover {
+    background-color: rgba(107, 26, 75, 0.8);
+    color: white;
+
+}
+
+
+/* highScoresViewList */
+.highScoresViewList,
+#resetScore {
+    /* display: none; */
+    /* list-style: none; */
+
+}
+
+.highScoresViewList {}
+
+/* confirmationDialog */
+.confirmationDialog {
+    /* display: none; */
+    text-align: center;
+    margin-right: auto;
+    margin-left: 20px;
+    margin: auto;
+}
+
+
+footer {
+    width: 100%;
+    z-index: 30;
+    bottom: 0%;
+    position: absolute;
+    text-align: center;
+    background-image: rgba(255, 255, 255, 0.0);
+    padding-bottom: 1vh;
+}
+
+#login {
+    color: white;
+    font-family: monospace;
+    font-size: large;
+    font-weight: bold;
+
+
+}

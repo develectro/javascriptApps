@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="develectro" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="GameWelcome.css" />
+
+</head>
+
+<body>
+
+    <!-- Welcome Screen -->
+    <div class="welcomeBanner">
+        <div class="flexColumn">
+            <p id="welcomeMessage">Welcom to Online X and O game</p>
+            <div class="flexRow">
+                <button type="button" id="newGame">New Game</button>
+                <button type="button" id="highScore">High Scores</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- high Scores Window -->
+    <div class="highScoresView">
+        <!-- this list shows high scoes with date modified -->
+        <ul class="highScoresViewList">
+            <li class="ulItem" id="li1">Score 1</li>
+            <li class="ulItem" id="li2">Score 2</li>
+            <li class="ulItem" id="li3">Score 3</li>
+            <li class="ulItem" id="li4">Score 4</li>
+            <li class="ulItem" id="li5">Score 5</li>
+        </ul>
+
+
+        <span class="confirmationDialog">
+            <!-- use alert() for confirmation -->
+            <button id="resetScore">Reset All</button>
+            <button type="button" id="highScoresViewButton">OK</button>
+        </span>
+    </div>
+
+
+    <script type="text/javascript" src="GameWelcome.js"></script>
+</body>
+
+<footer>
+    <a id="login" href="./login/loginPage.html" target="_blank">Log in</a>
+</footer>
+
+</html>

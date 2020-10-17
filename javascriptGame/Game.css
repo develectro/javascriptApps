@@ -1,0 +1,451 @@
+/* Developed by: Develectro */
+
+
+@charset "UTF-8";
+/* @charset must be the first rule at the stylesheet */
+
+/* @import url('https://fonts.googleapis.com/css2?family=Baloo+2&display=swap'); */
+@import url('GameWelcome.css');
+
+@page {
+    /* not supported yet*/
+}
+
+@viewport {
+    width: 100vw;
+    height: 100vh;
+    /* Remember this rule @viewport is deprecated */
+}
+
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0%;
+}
+
+
+body {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    /* centering technique using flexbox for body */
+
+
+}
+
+.bodyBackgroundFilter {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+
+}
+
+
+
+.gridAndSettingsFlex {
+    display: flex;
+    flex-wrap: nowrap;
+    /* change this for arabic lang */
+    flex-direction: row;
+    flex-flow: row wrap;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.gameConfig {
+    z-index: 3;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    flex-flow: column nowrap;
+    align-items: center;
+    position: relative;
+    margin: 10px;
+    /* margin: auto; */
+    padding: 20px;
+    padding-bottom: 40px;
+
+    width: 20%;
+    /* width:auto; so the gameConfig can take enough area */
+}
+
+.gameConfig div {
+    font-size: 40px;
+    color: lightblue;
+    text-align: center;
+
+}
+
+.gameConfig button {
+    margin: 5px;
+    width: 70%;
+    height: 7%;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(121, 65, 225, 0.7);
+    color: white;
+    transition-property: background-color;
+    transition-duration: 1s;
+    transition-delay: 0s;
+    transition-timing-function: ease;
+    transition: background-color, 0.5;
+
+}
+
+.gameConfig button:hover {
+    background-color: lightskyblue;
+
+}
+
+.gameConfig button:nth-last-child(2) {
+    /* flex-grow: 1; */
+    /* margin-bottom: auto; */
+    /* margin-top: auto; */
+    color: white;
+}
+
+.gameConfig button:nth-last-child(1) {
+    margin-top: auto;
+}
+
+
+.bodyBackground {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to top, rgba(167, 112, 239, 0.7), rgba(07, 26, 75, 0.8), rgba(60, 16, 83, 0.97)80%), url('file:///home/inspiron/Desktop/WebGame/resources/xoPattern.png');
+    background-size: cover;
+    /* filter: blur(15px);  rplaced with backdrop-filter*/
+}
+
+
+.container {
+
+    z-index: 10;
+    position: relative;
+    /* top: 20%; */
+    /* left: 50; */
+    /* this config is necessary to center non-grid div inside another div or body */
+
+
+    /* display: none; default*/
+    /* display:grid; by user clicks*/
+    display: grid;
+
+    /* Obsolete code */
+    /* grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    grid-gap: 10px; */
+    /* column-gap: 10px;
+    row-gap: 10px; */
+    gap: 10px;
+    justify-content: center;
+    align-content: center;
+
+
+    /* this config is necessary to center the contents inside the grid */
+
+    /* model1: to be use with grid-area; */
+    /* grid-template-areas:
+        'box1 box1 box2 box2 box3 box3'
+        'box4 box4 box5 box5 box6 box6'
+        'box7 box7 box8 box8 box9 box9'; */
+
+
+    /* model2: to be used with grid-template-rows and grid-template-columns */
+    /* instead of an integer you can use: auto-fit and auto-fill to add grid items automatically */
+    /* grid-template-rows: repeat(3, minmax(100px, 300));
+    grid-template-columns: repeat(3, minmax(100px, 300px)); */
+    grid-template-rows: repeat(3, 0.3fr);
+    grid-template-columns: repeat(3, 0.3fr);
+
+
+    /* polishing */
+    /* background-color: crimson; */
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    /* padding-top: 40px; */
+    margin: auto;
+    height: 80%;
+    width: 60%;
+
+}
+
+.gridItem {
+
+    position: relative;
+    top: 0%;
+    padding: 10px;
+    background-color: rgba(255, 247, 252, 0.589);
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 3px rgba(167, 112, 239, 0.2);
+
+    /*GRID Items transtions */
+    transition-property: background-color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+
+    /* Font */
+    font-family: monospace;
+    font-size: 50px;
+    text-align: center;
+    vertical-align: middle;
+    /* line-height: 100px; 
+    set using javascript
+    */
+    color: cornflowerblue;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.gridItem:hover {
+    background-color: rgba(93, 162, 252, 0.8);
+
+}
+
+/* Grid Items transitions and animations */
+.gridItem:active {
+    background-color: rgba(167, 112, 239, 0.7);
+    /* GRID Items animations */
+    animation-name: gridButtonAnimation;
+    animation-duration: 0.2s;
+    animation-delay: 0s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+/* GRID Items animations */
+@keyframes gridButtonAnimation {
+    from {
+        top: 0%;
+    }
+
+    to {
+        top: -5%;
+    }
+}
+
+
+.gameOverAlert {
+    /* After testing i found width: 25% and height: 30% is a little bit small, i added +30 */
+    visibility: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    flex-flow: column wrap;
+    justify-content: flex-start;
+    gap: 20%;
+    /* Text Span Container heigh:50%, Buttons Container height: 30% -> remaining 20% for the gap */
+    position: absolute;
+    z-index: 20;
+    /* z-index:20 to be over other backgrounds */
+    top: 50%;
+    left: 50%;
+    width: 55%;
+    /* height: 25%; changed for UX reasons */
+    height: 60%;
+    background-color: rgba(121, 65, 225, 0.2);
+    border-radius: 7px;
+    backdrop-filter: blur(10px);
+
+}
+
+.gameOverButtonContainer {
+    /* i just use thi ineer flex span to make 2 rows - 2 columns flexbox */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 30%;
+    gap: 5px;
+
+}
+
+.gameOverAlert button {
+
+    flex-basis: 30%;
+    /* flex-basis instead of setting width */
+    padding: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 50%;
+    border: none;
+    border-radius: 5px;
+    background-color: lightseagreen;
+    color: rgb(60, 16, 83);
+    background-color: white;
+    transition: background-color 0.5s, color 0.5;
+    transition-duration: 0.5s;
+    transition-delay: 0s;
+    transition-timing-function: ease-in-out;
+}
+
+.gameOverAlert button:hover {
+    color: white;
+    background-color: rgb(60, 16, 83);
+}
+
+.gameOverTextContainer {
+
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    color: white;
+    background-image: linear-gradient(to right, rgb(195, 55, 100), rgb(29, 38, 113));
+    border-top-right-radius: 7px;
+    border-top-left-radius: 7px;
+}
+
+.gameOverTextContainer p {
+    position: relative;
+    /* top: 25%; because <span> height is 50% */
+    top: 25%;
+    /* left: 50%; NO NEED :)*/
+    color: white;
+    font-weight: bold;
+    font-family: cursive;
+}
+
+#gameOverText {
+    font-family: monospace;
+    font-size: 40px;
+    animation-name: gameOverText;
+    animation-duration: 4s;
+    animation-delay: 0s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    /* animation smoothing */
+    animation-direction: alternate;
+    animation-fill-mode: forwards;
+
+}
+
+@keyframes gameOverText {
+    0% {
+        color: rgb(101, 65, 201);
+    }
+
+    25% {
+        color: slateblue;
+    }
+
+    50% {
+        color: lightcoral;
+    }
+
+    100% {
+        color: rgb(255, 163, 192);
+    }
+}
+
+
+.settings {
+    visibility: hidden;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    position: absolute;
+    padding: 8vh;
+    z-index: 10;
+    width: 400px;
+    height: auto;
+    background-color: rgba(98, 21, 134, 0.2);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(92, 70, 112, 0.39);
+
+}
+
+.settings_switcher {
+    width: 50px;
+    height: 25px;
+    border: none;
+    border-radius: 25px;
+    background-color: greenyellow;
+    margin: 10px;
+    align-self: flex-end;
+    align-content: flex-end;
+}
+
+.settings_switcher_circle {
+    display: block;
+    position: relative;
+    left: 0%;
+    top: 0%;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.labelsContainer {
+    display: flex;
+    flex-wrap: column;
+    flex-direction: column;
+    flex-flow: column nowrap;
+    flex-basis: 90%;
+}
+
+.label {
+    font-family: monospace;
+    font-size: auto;
+    color: white;
+    padding: 15px;
+    display: inline-flex;
+    align-items: center;
+    flex-basis: 100%;
+    flex-grow: 100%;
+}
+
+.switchersContainer {
+    display: flex;
+    flex-wrap: column;
+    flex-direction: column;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+}
+
+.labelsContainer>button {
+    width: 25%;
+    margin: 10px;
+    margin-top: 20%;
+    padding: 3%;
+    color: rgb(60, 16, 83);
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    transition-property: background-color, color;
+    transition-duration: 0.5s;
+    transition-delay: 0s;
+}
+
+.labelsContainer>button:hover {
+    background-color: rgb(60, 16, 83);
+    color: white;
+}
+
+.darkMode {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: 40;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+}
+
+/* @ Media Queries @ */

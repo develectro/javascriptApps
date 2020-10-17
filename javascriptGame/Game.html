@@ -1,0 +1,118 @@
+<!-- Developed by: Develectro -->
+
+<!doctype html>
+<html>
+
+<head>
+    <title>Game</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="Game.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css"></style>
+</head>
+
+
+<body>
+
+
+    <div class="gameOverAlert">
+        <span class="gameOverTextContainer">
+            <p id="gameOverText">Game Over!</p>
+        </span>
+        <span class="gameOverButtonContainer">
+            <button type="button" id="gameOverOk">OK</button>
+            <button type="button" id="gameOverNewGame">Play Again!</button>
+        </span>
+
+
+    </div>
+
+    <!-- backdrop-filter + flexbox for some buttons  -->
+    <div class="bodyBackgroundFilter">
+
+    </div>
+    <div class="bodyBackground"></div>
+
+    <!-- Game Grid and Settings flexbox container -->
+    <div class="gridAndSettingsFlex">
+
+        <!-- gameConfix flexbox z-index:3 over background filter-->
+        <div class="gameConfig">
+            <div class="gameTimer">0:00</div>
+            <button id="resetForNewGame">Reset</button>
+            <button id="settings">Settings</button>
+            <button id="exit">Exit</button>
+        </div>
+
+        <!-- Game Grids and stuff -->
+        <div class="container">
+
+            <!--Grid Items-->
+            <div class="gridItem box1" id="box1"> </div>
+            <div class="gridItem box2" id="box2"> </div>
+            <div class="gridItem box3" id="box3"> </div>
+            <div class="gridItem box4" id="box4"> </div>
+            <div class="gridItem box5" id="box5"> </div>
+            <div class="gridItem box6" id="box6"> </div>
+            <div class="gridItem box7" id="box7"> </div>
+            <div class="gridItem box8" id="box8"> </div>
+            <div class="gridItem box9" id="box9"> </div>
+        </div>
+    </div>
+
+    <!-- Game Settings, flex row -->
+    <div class="settings">
+
+        <!-- flex column -->
+        <div class="labelsContainer">
+            <!-- Label1 -->
+            <div class="label" id="settings_language">Language: English
+
+            </div>
+
+            <!-- Label2 -->
+            <div class="label" id="settings_theme">Theme: Day
+
+            </div>
+
+            <!-- label3 -->
+            <div class="label" id="settings_timer">Timer: ON
+
+            </div>
+
+            <!-- OK button -->
+            <button type="button" id="settingsOkButton">OK</button>
+        </div>
+
+        <!-- flex column -->
+        <div class="switchersContainer">
+            <!-- settings_language switcher  -->
+            <div class="settings_switcher">
+                <span class="settings_switcher_circle" id="switcherLang"></span>
+            </div>
+            <!-- settings_theme switcher -->
+            <div class="settings_switcher">
+                <span class="settings_switcher_circle" id="switcherTheme"></span>
+            </div>
+
+
+            <!-- settings_timer switcher -->
+            <div class="settings_switcher">
+                <span class="settings_switcher_circle" id="switcherTimer"></span>
+            </div>
+
+
+        </div>
+
+    </div>
+    <!-- Dark Mode Filter -->
+    <div class="darkMode"></div>
+
+
+    <script type="text/javascript" src="BrowserModule/reusableFunctions.js"></script>
+    <script type="text/javascript" src="Game.js"></script>
+    <script type="text/javascript" src="GameConfig.js"></script>
+    <script type="text/javascript" src="minimax.js"></script>
+</body>
+
+</html>
