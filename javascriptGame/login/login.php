@@ -1,5 +1,5 @@
 <?php
-# A tiny Script to handle login things
+# A tiny Script to handling login things
 
 class Log_In{
   
