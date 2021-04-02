@@ -1,0 +1,12 @@
+{
+  "Post":{
+    "titile":"this is a title",
+    "author":"it's me",
+    "topic":"Computer Programing",
+    "date":"2021
+  },
+  "Comment":{
+    "author":"comment author",
+    "data":"this is a tesing comment"
+  }
+}
