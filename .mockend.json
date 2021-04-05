@@ -1,0 +1,12 @@
+{
+  "post":{
+    "author":"mustafa",
+    "topic":"computer programing",
+    "date":"2021",
+  },
+  "comment":{
+    "author":"visitor",
+    "title":"javascript",
+    "date","2021",
+  },
+}
