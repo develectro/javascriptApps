@@ -1,5 +1,4 @@
 //Custom Error:
-
 var MyError = function(){
     console.log("An error detected");
     throw "this error is because you have entered a string";
@@ -15,7 +14,7 @@ function getName(name){
 getName('Mustafa');
 
 
-
+//Error Handling Using if..else:
 function Computer(myComputer){
   if(typeof(myComputer) == "string"){
       if(myComputer == 'DELL'){
@@ -35,7 +34,7 @@ function Computer(myComputer){
 }
 Computer("DELL");
 
- 
+//Error Handling Using try..catch: 
 function CapitalizeName(name){
 
       try{
