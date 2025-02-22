@@ -1,0 +1,25 @@
+{
+  "name": "particle-animation-app",
+  "version": "1.0.0",
+  "description": "A particle animation application that creates stunning visual effects using particles.",
+  "main": "src/scripts/main.js",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build step not defined'",
+    "test": "echo 'No tests defined'"
+  },
+  "keywords": [
+    "particle",
+    "animation",
+    "canvas",
+    "visual effects"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "canvas": "^2.8.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
