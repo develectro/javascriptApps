@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freaking Math Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .game-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #equation {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .buttons button {
+            font-size: 1.5em;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #yesButton {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+        #yesButton:hover {
+            background-color: #45a049;
+        }
+        #noButton {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+        #noButton:hover {
+            background-color: #da190b;
+        }
+        #feedback {
+            font-size: 1.2em;
+            margin-top: 20px;
+            min-height: 1.5em; /* To prevent layout shift */
+            font-weight: bold;
+        }
+        .correct {
+            color: #4CAF50;
+        }
+        .incorrect {
+            color: #f44336;
+        }
+        #score {
+            font-size: 1.2em;
+            margin-top: 15px;
+            color: #333;
+        }
+        h1 {
+            color: #333;
+        }
+        #timer {
+            font-size: 1.3em;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #e67e22; /* Orange color for timer */
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Freaking Math Game!</h1>
+        <p>Is the following statement true?</p>
+        <div id="equation">
+            <span id="num1"></span> + <span id="num2"></span> = <span id="displayedSum"></span>
+        </div>
+        <div class="buttons">
+            <button id="yesButton">Yes (True)</button>
+            <button id="noButton">No (False)</button>
+        </div>
+        <div id="feedback"></div>
+        <div id="score">
+            Score: <span id="currentScore">0</span> / <span id="roundsPlayed">0</span>
+        </div>
+        <div id="timer">
+            Time Left: <span id="timeLeftDisplay">10</span>s
+        </div>
+    </div>
+
+    <script>
+        const num1Element = document.getElementById('num1');
+        const num2Element = document.getElementById('num2');
+        const displayedSumElement = document.getElementById('displayedSum');
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const feedbackElement = document.getElementById('feedback');
+        const currentScoreElement = document.getElementById('currentScore');
+        const roundsPlayedElement = document.getElementById('roundsPlayed');
+        const timeLeftDisplayElement = document.getElementById('timeLeftDisplay');
+
+        let score = 0;
+        let roundsPlayed = 0;
+        let currentCorrectSum;
+        let isStatementActuallyTrue;
+
+        const TIME_PER_QUESTION = 10; // Seconds
+        let timeLeft = TIME_PER_QUESTION;
+        let timerInterval;
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateNewProblem() {
+            roundsPlayed++;
+            const num1 = getRandomInt(1, 20);
+            const num2 = getRandomInt(1, 20);
+            currentCorrectSum = num1 + num2;
+
+            // Decide if we show the correct sum or a fake one
+            const showCorrectSumDecision = Math.random() < 0.5; // 50% chance
+
+            let displayedSum;
+            if (showCorrectSumDecision) {
+                displayedSum = currentCorrectSum;
+                isStatementActuallyTrue = true;
+            } else {
+                let offset = getRandomInt(1, 5) * (Math.random() < 0.5 ? -1 : 1);
+                displayedSum = currentCorrectSum + offset;
+                // Ensure the incorrect sum is not accidentally the correct sum
+                while (displayedSum === currentCorrectSum) {
+                    offset = getRandomInt(1, 5) * (Math.random() < 0.5 ? -1 : 1);
+                    displayedSum = currentCorrectSum + offset;
+                }
+                isStatementActuallyTrue = false;
+            }
+
+            num1Element.textContent = num1;
+            num2Element.textContent = num2;
+            displayedSumElement.textContent = displayedSum;
+
+            feedbackElement.textContent = '';
+            feedbackElement.className = ''; // Clear previous color classes
+            updateScoreDisplay();
+            enableButtons();
+            startTimer();
+        }
+
+        function updateScoreDisplay() {
+            currentScoreElement.textContent = score;
+            roundsPlayedElement.textContent = roundsPlayed;
+        }
+
+        function disableButtons() {
+            yesButton.disabled = true;
+            noButton.disabled = true;
+        }
+
+        function enableButtons() {
+            yesButton.disabled = false;
+            noButton.disabled = false;
+        }
+
+        function startTimer() {
+            timeLeft = TIME_PER_QUESTION;
+            timeLeftDisplayElement.textContent = timeLeft;
+            clearInterval(timerInterval); // Clear any existing timer
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timeLeftDisplayElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function handleTimeUp() {
+            handleAnswer(null, true); // Pass a distinct value for userThinksTrue, and a flag for timeUp
+        }
+
+        function handleAnswer(userThinksTrue) {
+            stopTimer();
+            disableButtons();
+            if (userThinksTrue === isStatementActuallyTrue) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = 'correct';
+                score++;
+            } else {
+                feedbackElement.textContent = `Oops! Incorrect. The actual sum was ${currentCorrectSum}.`;
+                feedbackElement.className = 'incorrect'; // Default to incorrect
+            }
+            updateScoreDisplay();
+
+            // Go to the next problem after a short delay
+            setTimeout(generateNewProblem, 1500); // 1.5 seconds delay
+        }
+
+        function handleAnswer(userThinksTrue, timeUp = false) {
+            stopTimer();
+            disableButtons();
+
+            if (timeUp) {
+                feedbackElement.textContent = `Time's Up! The actual sum was ${currentCorrectSum}.`;
+                feedbackElement.className = 'incorrect';
+            } else if (userThinksTrue === isStatementActuallyTrue) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = 'correct';
+                score++;
+            } else {
+                feedbackElement.textContent = `Oops! Incorrect. The actual sum was ${currentCorrectSum}.`;
+                feedbackElement.className = 'incorrect';
+            }
+            updateScoreDisplay();
+
+            // Go to the next problem after a short delay
+            setTimeout(generateNewProblem, 1500); // 1.5 seconds delay
+        }
+
+        yesButton.addEventListener('click', () => handleAnswer(true));
+        noButton.addEventListener('click', () => handleAnswer(false));
+
+        // Start the game
+        generateNewProblem();
+    </script>
+</body>
+</html>
