@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atom Simulator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding-top: 20px;
+    background-color: var(--bg-color, #f0f0f0); /* Light theme default */
+    color: var(--text-color, #000);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  #controls {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+    justify-content: center; /* Center buttons horizontally */
+    gap: 5px; /* Spacing between buttons */
+    max-width: 90%; /* Prevent controls from becoming too wide */
+  }
+  #controls button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    font-size: 1em;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: var(--button-bg-color, #fff);
+    color: var(--button-text-color, #000);
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    min-width: 80px; /* Ensure buttons have a decent minimum width */
+  }
+  #controls button:hover {
+    background-color: var(--button-hover-bg-color, #e9e9e9);
+  }
+  #controls button.active {
+    background-color: var(--button-active-bg-color, #4CAF50);
+    color: white;
+    border-color: var(--button-active-bg-color, #4CAF50);
+  }
+  #atomCanvas {
+    border: 1px solid #333;
+    background-color: var(--canvas-bg-color, #fff);
+    transition: background-color 0.3s;
+  }
+
+  /* Dark Theme Variables */
+  body.dark-theme {
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --button-bg-color: #34495e;
+    --button-text-color: #ecf0f1;
+    --button-hover-bg-color: #4a6278;
+    --button-active-bg-color: #1abc9c;
+    --canvas-bg-color: #1e272e;
+  }
+</style>
+</head>
+<body>
+
+<button id="themeToggle" style="position: absolute; top: 10px; right: 10px; padding: 8px 12px;">Toggle Theme</button>
+
+<div id="controls"> <!-- Buttons will be dynamically added here --> </div>
+
+<canvas id="atomCanvas"></canvas>
+
+<script>
+  const canvas = document.getElementById('atomCanvas');
+  const ctx = canvas.getContext('2d');
+  const controlsDiv = document.getElementById('controls');
+  const themeToggleButton = document.getElementById('themeToggle');
+
+  canvas.width = 600;
+  canvas.height = 600;
+
+  // --- Atom Data ---
+  const atomData = {
+    "H":  { name: "Hydrogen",    symbol: "H",  protons: 1,  neutrons: 0,   electrons: [1] }, // H-1
+    "He": { name: "Helium",      symbol: "He", protons: 2,  neutrons: 2,   electrons: [2] }, // He-4
+    "Li": { name: "Lithium",     symbol: "Li", protons: 3,  neutrons: 4,   electrons: [2, 1] }, // Li-7
+    "Be": { name: "Beryllium",   symbol: "Be", protons: 4,  neutrons: 5,   electrons: [2, 2] }, // Be-9
+    "B":  { name: "Boron",       symbol: "B",  protons: 5,  neutrons: 6,   electrons: [2, 3] }, // B-11
+    "C":  { name: "Carbon",      symbol: "C",  protons: 6,  neutrons: 6,   electrons: [2, 4] }, // C-12
+    "N":  { name: "Nitrogen",    symbol: "N",  protons: 7,  neutrons: 7,   electrons: [2, 5] }, // N-14
+    "O":  { name: "Oxygen",      symbol: "O",  protons: 8,  neutrons: 8,   electrons: [2, 6] }, // O-16
+    "F":  { name: "Fluorine",    symbol: "F",  protons: 9,  neutrons: 10,  electrons: [2, 7] }, // F-19
+    "Ne": { name: "Neon",        symbol: "Ne", protons: 10, neutrons: 10,  electrons: [2, 8] }, // Ne-20
+    "Na": { name: "Sodium",      symbol: "Na", protons: 11, neutrons: 12,  electrons: [2, 8, 1] }, // Na-23
+    "Mg": { name: "Magnesium",   symbol: "Mg", protons: 12, neutrons: 12,  electrons: [2, 8, 2] }, // Mg-24
+    "Al": { name: "Aluminum",    symbol: "Al", protons: 13, neutrons: 14,  electrons: [2, 8, 3] }, // Al-27
+    "Si": { name: "Silicon",     symbol: "Si", protons: 14, neutrons: 14,  electrons: [2, 8, 4] }, // Si-28
+    "P":  { name: "Phosphorus",  symbol: "P",  protons: 15, neutrons: 16,  electrons: [2, 8, 5] }, // P-31
+    "S":  { name: "Sulfur",      symbol: "S",  protons: 16, neutrons: 16,  electrons: [2, 8, 6] }, // S-32
+    "Cl": { name: "Chlorine",    symbol: "Cl", protons: 17, neutrons: 18,  electrons: [2, 8, 7] }, // Cl-35
+    "Ar": { name: "Argon",       symbol: "Ar", protons: 18, neutrons: 22,  electrons: [2, 8, 8] }, // Ar-40
+    "K":  { name: "Potassium",   symbol: "K",  protons: 19, neutrons: 20,  electrons: [2, 8, 8, 1] }, // K-39
+    "Ca": { name: "Calcium",     symbol: "Ca", protons: 20, neutrons: 20,  electrons: [2, 8, 8, 2] }, // Ca-40
+    "Sc": { name: "Scandium",    symbol: "Sc", protons: 21, neutrons: 24,  electrons: [2, 8, 9, 2] }, // Sc-45
+    "Ti": { name: "Titanium",    symbol: "Ti", protons: 22, neutrons: 26,  electrons: [2, 8, 10, 2] }, // Ti-48
+    "V":  { name: "Vanadium",    symbol: "V",  protons: 23, neutrons: 28,  electrons: [2, 8, 11, 2] }, // V-51
+    "Cr": { name: "Chromium",    symbol: "Cr", protons: 24, neutrons: 28,  electrons: [2, 8, 13, 1] }, // Cr-52 (exception to Aufbau)
+    "Mn": { name: "Manganese",   symbol: "Mn", protons: 25, neutrons: 30,  electrons: [2, 8, 13, 2] }, // Mn-55
+    "Fe": { name: "Iron",        symbol: "Fe", protons: 26, neutrons: 30,  electrons: [2, 8, 14, 2] }, // Fe-56
+    "Co": { name: "Cobalt",      symbol: "Co", protons: 27, neutrons: 32,  electrons: [2, 8, 15, 2] }, // Co-59
+    "Ni": { name: "Nickel",      symbol: "Ni", protons: 28, neutrons: 30,  electrons: [2, 8, 16, 2] }, // Ni-58
+    "Cu": { name: "Copper",      symbol: "Cu", protons: 29, neutrons: 34,  electrons: [2, 8, 18, 1] }, // Cu-63 (exception to Aufbau)
+    "Zn": { name: "Zinc",        symbol: "Zn", protons: 30, neutrons: 35,  electrons: [2, 8, 18, 2] }, // Zn-65
+    "Ga": { name: "Gallium",     symbol: "Ga", protons: 31, neutrons: 39,  electrons: [2, 8, 18, 3] }, // Ga-70 (approx avg)
+    "Ge": { name: "Germanium",   symbol: "Ge", protons: 32, neutrons: 41,  electrons: [2, 8, 18, 4] }, // Ge-73 (approx avg)
+    "As": { name: "Arsenic",     symbol: "As", protons: 33, neutrons: 42,  electrons: [2, 8, 18, 5] }, // As-75
+    "Se": { name: "Selenium",    symbol: "Se", protons: 34, neutrons: 45,  electrons: [2, 8, 18, 6] }, // Se-79 (approx avg)
+    "Br": { name: "Bromine",     symbol: "Br", protons: 35, neutrons: 45,  electrons: [2, 8, 18, 7] }, // Br-80 (approx avg)
+    "Kr": { name: "Krypton",     symbol: "Kr", protons: 36, neutrons: 48,  electrons: [2, 8, 18, 8] }, // Kr-84
+    "Rb": { name: "Rubidium",    symbol: "Rb", protons: 37, neutrons: 48,  electrons: [2, 8, 18, 8, 1] }, // Rb-85
+    "Sr": { name: "Strontium",   symbol: "Sr", protons: 38, neutrons: 50,  electrons: [2, 8, 18, 8, 2] }, // Sr-88
+    "Y":  { name: "Yttrium",     symbol: "Y",  protons: 39, neutrons: 50,  electrons: [2, 8, 18, 9, 2] }, // Y-89
+    "Zr": { name: "Zirconium",   symbol: "Zr", protons: 40, neutrons: 51,  electrons: [2, 8, 18, 10, 2] }, // Zr-91 (approx avg)
+    "Nb": { name: "Niobium",     symbol: "Nb", protons: 41, neutrons: 52,  electrons: [2, 8, 18, 12, 1] }, // Nb-93 (exception)
+    "Mo": { name: "Molybdenum",  symbol: "Mo", protons: 42, neutrons: 54,  electrons: [2, 8, 18, 13, 1] }, // Mo-96 (exception)
+    "Tc": { name: "Technetium",  symbol: "Tc", protons: 43, neutrons: 55,  electrons: [2, 8, 18, 13, 2] }, // Tc-98 (most stable)
+    "Ru": { name: "Ruthenium",   symbol: "Ru", protons: 44, neutrons: 57,  electrons: [2, 8, 18, 15, 1] }, // Ru-101 (exception)
+    "Rh": { name: "Rhodium",     symbol: "Rh", protons: 45, neutrons: 58,  electrons: [2, 8, 18, 16, 1] }, // Rh-103 (exception)
+    "Pd": { name: "Palladium",   symbol: "Pd", protons: 46, neutrons: 60,  electrons: [2, 8, 18, 18, 0] }, // Pd-106 (exception)
+    "Ag": { name: "Silver",      symbol: "Ag", protons: 47, neutrons: 61,  electrons: [2, 8, 18, 18, 1] }, // Ag-108 (approx avg, exception)
+    "Cd": { name: "Cadmium",     symbol: "Cd", protons: 48, neutrons: 64,  electrons: [2, 8, 18, 18, 2] }, // Cd-112
+    "In": { name: "Indium",      symbol: "In", protons: 49, neutrons: 66,  electrons: [2, 8, 18, 18, 3] }, // In-115
+    "Sn": { name: "Tin",         symbol: "Sn", protons: 50, neutrons: 69,  electrons: [2, 8, 18, 18, 4] }, // Sn-119 (approx avg)
+    "Sb": { name: "Antimony",    symbol: "Sb", protons: 51, neutrons: 71,  electrons: [2, 8, 18, 18, 5] }, // Sb-122 (approx avg)
+    "Te": { name: "Tellurium",   symbol: "Te", protons: 52, neutrons: 76,  electrons: [2, 8, 18, 18, 6] }, // Te-128 (approx avg)
+    "I":  { name: "Iodine",      symbol: "I",  protons: 53, neutrons: 74,  electrons: [2, 8, 18, 18, 7] }, // I-127
+    "Xe": { name: "Xenon",       symbol: "Xe", protons: 54, neutrons: 77,  electrons: [2, 8, 18, 18, 8] }, // Xe-131 (approx avg)
+    "Cs": { name: "Caesium",     symbol: "Cs", protons: 55, neutrons: 78,  electrons: [2, 8, 18, 18, 8, 1] }, // Cs-133
+    "Ba": { name: "Barium",      symbol: "Ba", protons: 56, neutrons: 81,  electrons: [2, 8, 18, 18, 8, 2] }, // Ba-137 (approx avg)
+    // --- Some heavier/notable elements ---
+    "W":  { name: "Tungsten",    symbol: "W",  protons: 74, neutrons: 110, electrons: [2, 8, 18, 32, 12, 2] }, // W-184 (Bohr model)
+    "Re": { name: "Rhenium",     symbol: "Re", protons: 75, neutrons: 111, electrons: [2, 8, 18, 32, 13, 2] }, // Re-186 (approx avg)
+    "Os": { name: "Osmium",      symbol: "Os", protons: 76, neutrons: 114, electrons: [2, 8, 18, 32, 14, 2] }, // Os-190 (approx avg)
+    "Ir": { name: "Iridium",     symbol: "Ir", protons: 77, neutrons: 115, electrons: [2, 8, 18, 32, 15, 2] }, // Ir-192 (approx avg)
+    "Pt": { name: "Platinum",    symbol: "Pt", protons: 78, neutrons: 117, electrons: [2, 8, 18, 32, 17, 1] }, // Pt-195 (Bohr model, exception)
+    "Au": { name: "Gold",        symbol: "Au", protons: 79, neutrons: 118, electrons: [2, 8, 18, 32, 18, 1] }, // Au-197 (Bohr model, exception)
+    "Hg": { name: "Mercury",     symbol: "Hg", protons: 80, neutrons: 121, electrons: [2, 8, 18, 32, 18, 2] }, // Hg-201 (approx avg, Bohr model)
+    "Tl": { name: "Thallium",    symbol: "Tl", protons: 81, neutrons: 123, electrons: [2, 8, 18, 32, 18, 3] }, // Tl-204 (approx avg)
+    "Pb": { name: "Lead",        symbol: "Pb", protons: 82, neutrons: 125, electrons: [2, 8, 18, 32, 18, 4] }, // Pb-207 (approx avg, Bohr model)
+    "Bi": { name: "Bismuth",     symbol: "Bi", protons: 83, neutrons: 126, electrons: [2, 8, 18, 32, 18, 5] }, // Bi-209
+    "Po": { name: "Polonium",    symbol: "Po", protons: 84, neutrons: 125, electrons: [2, 8, 18, 32, 18, 6] }, // Po-209 (most stable)
+    "At": { name: "Astatine",    symbol: "At", protons: 85, neutrons: 125, electrons: [2, 8, 18, 32, 18, 7] }, // At-210 (most stable)
+    "Rn": { name: "Radon",       symbol: "Rn", protons: 86, neutrons: 136, electrons: [2, 8, 18, 32, 18, 8] }, // Rn-222 (most stable)
+    "Fr": { name: "Francium",    symbol: "Fr", protons: 87, neutrons: 136, electrons: [2, 8, 18, 32, 18, 8, 1] }, // Fr-223 (most stable)
+    "Ra": { name: "Radium",      symbol: "Ra", protons: 88, neutrons: 138, electrons: [2, 8, 18, 32, 18, 8, 2] }, // Ra-226 (most stable)
+    "Ac": { name: "Actinium",    symbol: "Ac", protons: 89, neutrons: 138, electrons: [2, 8, 18, 32, 18, 9, 2] }, // Ac-227 (most stable)
+    "Th": { name: "Thorium",     symbol: "Th", protons: 90, neutrons: 142, electrons: [2, 8, 18, 32, 18, 10, 2] },// Th-232
+    "Pa": { name: "Protactinium",symbol: "Pa", protons: 91, neutrons: 140, electrons: [2, 8, 18, 32, 20, 9, 2] }, // Pa-231
+    "U":  { name: "Uranium",     symbol: "U",  protons: 92, neutrons: 146, electrons: [2, 8, 18, 32, 21, 9, 2] },  // U-238 (Bohr model)
+    "Np": { name: "Neptunium",   symbol: "Np", protons: 93, neutrons: 144, electrons: [2, 8, 18, 32, 22, 9, 2] }, // Np-237
+    "Pu": { name: "Plutonium",   symbol: "Pu", protons: 94, neutrons: 150, electrons: [2, 8, 18, 32, 24, 8, 2] }, // Pu-244
+    "Am": { name: "Americium",   symbol: "Am", protons: 95, neutrons: 148, electrons: [2, 8, 18, 32, 25, 8, 2] }, // Am-243
+    "Cm": { name: "Curium",      symbol: "Cm", protons: 96, neutrons: 151, electrons: [2, 8, 18, 32, 25, 9, 2] }, // Cm-247
+    "Bk": { name: "Berkelium",   symbol: "Bk", protons: 97, neutrons: 150, electrons: [2, 8, 18, 32, 27, 8, 2] }, // Bk-247
+    "Cf": { name: "Californium", symbol: "Cf", protons: 98, neutrons: 153, electrons: [2, 8, 18, 32, 28, 8, 2] }, // Cf-251
+    "Es": { name: "Einsteinium", symbol: "Es", protons: 99, neutrons: 153, electrons: [2, 8, 18, 32, 29, 8, 2] }, // Es-252
+    "Fm": { name: "Fermium",     symbol: "Fm", protons: 100, neutrons: 157, electrons: [2, 8, 18, 32, 30, 8, 2] },// Fm-257
+    "Md": { name: "Mendelevium", symbol: "Md", protons: 101, neutrons: 157, electrons: [2, 8, 18, 32, 31, 8, 2] },// Md-258
+    "No": { name: "Nobelium",    symbol: "No", protons: 102, neutrons: 157, electrons: [2, 8, 18, 32, 32, 8, 2] },// No-259
+    "Lr": { name: "Lawrencium",  symbol: "Lr", protons: 103, neutrons: 159, electrons: [2, 8, 18, 32, 32, 8, 3] }, // Lr-262 (Bohr model approx. can also be ...32, 9, 2)
+    // --- Transactinides / Superheavy elements ---
+    "Rf": { name: "Rutherfordium", symbol: "Rf", protons: 104, neutrons: 161, electrons: [2, 8, 18, 32, 32, 10, 2] }, // Rf-265 (Bohr model approx.)
+    "Db": { name: "Dubnium",       symbol: "Db", protons: 105, neutrons: 163, electrons: [2, 8, 18, 32, 32, 11, 2] }, // Db-268 (Bohr model approx.)
+    "Sg": { name: "Seaborgium",    symbol: "Sg", protons: 106, neutrons: 165, electrons: [2, 8, 18, 32, 32, 12, 2] }, // Sg-271 (Bohr model approx.)
+    "Bh": { name: "Bohrium",       symbol: "Bh", protons: 107, neutrons: 165, electrons: [2, 8, 18, 32, 32, 13, 2] }, // Bh-272 (Bohr model approx.)
+    "Hs": { name: "Hassium",       symbol: "Hs", protons: 108, neutrons: 169, electrons: [2, 8, 18, 32, 32, 14, 2] }, // Hs-277 (Bohr model approx.)
+    "Mt": { name: "Meitnerium",    symbol: "Mt", protons: 109, neutrons: 169, electrons: [2, 8, 18, 32, 32, 15, 2] }, // Mt-278 (Bohr model approx.)
+    "Ds": { name: "Darmstadtium",  symbol: "Ds", protons: 110, neutrons: 171, electrons: [2, 8, 18, 32, 32, 16, 2] }, // Ds-281 (Bohr model approx. likely ...17,1)
+    "Rg": { name: "Roentgenium",   symbol: "Rg", protons: 111, neutrons: 171, electrons: [2, 8, 18, 32, 32, 17, 2] }, // Rg-282 (Bohr model approx. likely ...18,1)
+    "Cn": { name: "Copernicium",   symbol: "Cn", protons: 112, neutrons: 173, electrons: [2, 8, 18, 32, 32, 18, 2] }, // Cn-285 (Bohr model approx.)
+    "Nh": { name: "Nihonium",      symbol: "Nh", protons: 113, neutrons: 171, electrons: [2, 8, 18, 32, 32, 18, 3] }, // Nh-284 (Bohr model approx.)
+    "Fl": { name: "Flerovium",     symbol: "Fl", protons: 114, neutrons: 175, electrons: [2, 8, 18, 32, 32, 18, 4] }, // Fl-289 (Bohr model approx.)
+    "Mc": { name: "Moscovium",     symbol: "Mc", protons: 115, neutrons: 175, electrons: [2, 8, 18, 32, 32, 18, 5] }, // Mc-290 (Bohr model approx.)
+    "Lv": { name: "Livermorium",   symbol: "Lv", protons: 116, neutrons: 177, electrons: [2, 8, 18, 32, 32, 18, 6] }, // Lv-293 (Bohr model approx.)
+    "Ts": { name: "Tennessine",    symbol: "Ts", protons: 117, neutrons: 177, electrons: [2, 8, 18, 32, 32, 18, 7] }, // Ts-294 (Bohr model approx.)
+    "Og": { name: "Oganesson",     symbol: "Og", protons: 118, neutrons: 176, electrons: [2, 8, 18, 32, 32, 18, 8] }  // Og-294 (Bohr model approx.)
+  };
+
+  // --- Simulation Constants ---
+  // Colors will be dynamically set based on theme for better contrast
+  let PROTON_COLOR, NEUTRON_COLOR, ELECTRON_COLOR, SHELL_COLOR, TEXT_COLOR;
+
+  const NUCLEON_RADIUS = 5;
+  const ELECTRON_RADIUS = 4;
+  const NUCLEUS_PACKING_RADIUS_FACTOR = 1.2; // Adjust for visual density of nucleus
+
+  const SHELL_BASE_RADIUS = 45;    // Starting radius for the first shell
+  const SHELL_SPACING = 30;       // Space between shells
+  const ELECTRON_BASE_SPEED = 0.015; // Radians per frame (constant angular speed for all electrons)
+
+  let currentElementKey = "H"; // Default element
+  let currentElement = atomData[currentElementKey];
+  let activeElectrons = [];
+  let isDarkMode = false;
+
+  function populateElementButtons() {
+    controlsDiv.innerHTML = ''; // Clear existing buttons
+    for (const key in atomData) {
+      if (Object.hasOwnProperty.call(atomData, key)) {
+        const button = document.createElement('button');
+        button.dataset.element = key;
+        button.textContent = atomData[key].name; // Or key for symbol
+        controlsDiv.appendChild(button);
+      }
+    }
+  }
+  function updateColorsForTheme() {
+    if (isDarkMode) {
+      PROTON_COLOR = 'rgba(231, 76, 60, 0.9)';   // Brighter Red
+      NEUTRON_COLOR = 'rgba(52, 152, 219, 0.8)'; // Brighter Blue
+      ELECTRON_COLOR = '#f1c40f';               // Bright Yellow (Gold)
+      SHELL_COLOR = 'rgba(149, 165, 166, 0.5)';  // Lighter Grey for shells
+      TEXT_COLOR = '#ecf0f1';                   // Light text color
+    } else {
+      PROTON_COLOR = 'rgba(255, 0, 0, 0.8)'; // Original Red
+      NEUTRON_COLOR = 'rgba(0, 0, 255, 0.7)'; // Original Blue
+      ELECTRON_COLOR = 'gold';
+      SHELL_COLOR = 'rgba(200, 200, 200, 0.6)';
+      TEXT_COLOR = 'black';                     // Original black text
+    }
+  }
+
+  function setActiveButton(selectedKey) {
+    const buttons = controlsDiv.querySelectorAll('button');
+    buttons.forEach(button => {
+      if (button.dataset.element === selectedKey) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
+  }
+
+  function setupAtom(elementKey) {
+    currentElementKey = elementKey;
+    currentElement = atomData[elementKey];
+    activeElectrons = [];
+
+    if (!currentElement) {
+        console.error("Element data not found for key:", elementKey);
+        return;
+    }
+    setActiveButton(elementKey);
+
+    currentElement.electrons.forEach((numElectronsInShell, shellIndex) => {
+      const shellRadius = SHELL_BASE_RADIUS + shellIndex * SHELL_SPACING;
+      for (let i = 0; i < numElectronsInShell; i++) {
+        activeElectrons.push({
+          shellIndex: shellIndex,
+          radius: shellRadius,
+          angle: (i / numElectronsInShell) * 2 * Math.PI, // Evenly space electrons
+          speed: ELECTRON_BASE_SPEED
+          // Optional: Vary speed slightly, e.g., ELECTRON_BASE_SPEED / (shellIndex * 0.5 + 1)
+        });
+      }
+    });
+  }
+
+  function drawNucleus(centerX, centerY, protons, neutrons) {
+    const totalNucleons = protons + neutrons;
+    if (totalNucleons === 0) return;
+
+    // Estimate visual radius for packing nucleons
+    const estimatedNucleusVisualRadius = NUCLEON_RADIUS * Math.cbrt(totalNucleons) * NUCLEUS_PACKING_RADIUS_FACTOR;
+
+    // Draw Protons
+    ctx.fillStyle = PROTON_COLOR;
+    for (let i = 0; i < protons; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      // Distribute more densely towards the center
+      const radius = Math.random() * Math.random() * estimatedNucleusVisualRadius;
+      ctx.beginPath();
+      ctx.arc(centerX + radius * Math.cos(angle),
+              centerY + radius * Math.sin(angle),
+              NUCLEON_RADIUS, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    // Draw Neutrons
+    ctx.fillStyle = NEUTRON_COLOR;
+    for (let i = 0; i < neutrons; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const radius = Math.random() * Math.random() * estimatedNucleusVisualRadius;
+      ctx.beginPath();
+      ctx.arc(centerX + radius * Math.cos(angle),
+              centerY + radius * Math.sin(angle),
+              NUCLEON_RADIUS, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    if (currentElement) {
+      // Draw Nucleus
+      drawNucleus(centerX, centerY, currentElement.protons, currentElement.neutrons);
+
+      // Draw Electron Shells
+      ctx.strokeStyle = SHELL_COLOR;
+      ctx.lineWidth = 1;
+      currentElement.electrons.forEach((_, shellIndex) => {
+        const shellRadius = SHELL_BASE_RADIUS + shellIndex * SHELL_SPACING;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, shellRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+      });
+
+      // Update and Draw Electrons
+      ctx.fillStyle = ELECTRON_COLOR;
+      activeElectrons.forEach(electron => {
+        electron.angle += electron.speed;
+        const x = centerX + electron.radius * Math.cos(electron.angle);
+        const y = centerY + electron.radius * Math.sin(electron.angle);
+        ctx.beginPath();
+        ctx.arc(x, y, ELECTRON_RADIUS, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+
+      // Draw Element Info
+      ctx.fillStyle = TEXT_COLOR;
+      ctx.font = 'bold 18px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${currentElement.name} (${currentElement.symbol})`, centerX, 30);
+      ctx.font = '15px Arial';
+      ctx.fillText(`Protons: ${currentElement.protons}, Neutrons: ${currentElement.neutrons}`, centerX, 55);
+      ctx.fillText(`Electrons: ${currentElement.electrons.join(', ')} (in shells)`, centerX, 75);
+    }
+  }
+
+  // --- Event Listeners for Controls ---
+  controlsDiv.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      const elementKey = event.target.dataset.element;
+      if (atomData[elementKey]) {
+        setupAtom(elementKey);
+      }
+    }
+  });
+
+  themeToggleButton.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark-theme', isDarkMode);
+    themeToggleButton.textContent = isDarkMode ? "Light Theme" : "Dark Theme";
+    updateColorsForTheme();
+    // No need to call animate() here, it's already running.
+    // The next frame will pick up the new colors.
+  });
+
+  // --- Initial Setup ---
+  populateElementButtons(); // Create buttons for all elements
+  updateColorsForTheme(); // Set initial colors based on default theme (light)
+  setupAtom(currentElementKey); // Load default atom
+  animate(); // Start the animation loop
+
+  // Set initial button text for theme toggle
+  themeToggleButton.textContent = isDarkMode ? "Light Theme" : "Dark Theme";
+
+</script>
+</body>
+</html>
+ 
