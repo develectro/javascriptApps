@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mouse Particle Trail</title>
+<style>
+  body { margin: 0; overflow: hidden; background-color: #000; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let particlesArray = [];
+  const mouse = {
+    x: null,
+    y: null,
+    radius: 50 // Area around mouse to emit particles
+  };
+
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+
+  if (isTouchDevice) {
+    // For touch devices, particles only emit on active touch
+    window.addEventListener('touchstart', function(event) {
+      if (event.touches.length > 0) {
+        mouse.x = event.touches[0].clientX;
+        mouse.y = event.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', function(event) {
+      if (event.touches.length > 0) {
+        mouse.x = event.touches[0].clientX;
+        mouse.y = event.touches[0].clientY;
+      }
+      // To prevent page scrolling while drawing, you might consider:
+      // if (mouse.x !== null && mouse.y !== null) event.preventDefault();
+    }, { passive: true }); // Set to false if using event.preventDefault()
+
+    window.addEventListener('touchend', function(event) {
+      // Clear mouse coordinates to stop particle emission when touch ends
+      mouse.x = null;
+      mouse.y = null;
+    });
+  } else {
+    // For non-touch devices, particles follow the mouse
+    window.addEventListener('mousemove', function(event) {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+    });
+
+    // Optional: Stop particles if the mouse leaves the window
+    // window.addEventListener('mouseout', function() {
+    //   mouse.x = null;
+    //   mouse.y = null;
+    // });
+  }
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 5 + 1; // Particle size
+      this.speedX = Math.random() * 3 - 1.5; // Horizontal speed
+      this.speedY = Math.random() * 3 - 1.5; // Vertical speed
+      this.color = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
+      this.life = 100; // Particle lifespan
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life -= 1.5; // Decrease life
+      if (this.size > 0.2) this.size -= 0.1; // Shrink particle
+    }
+
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function handleParticles() {
+    if (mouse.x !== null && mouse.y !== null) {
+        for (let i = 0; i < 5; i++) { // Emit 5 particles per frame
+            particlesArray.push(new Particle(mouse.x, mouse.y));
+        }
+    }
+
+    for (let i = 0; i < particlesArray.length; i++) {
+      particlesArray[i].update();
+      particlesArray[i].draw();
+
+      if (particlesArray[i].life <= 0 || particlesArray[i].size <= 0.2) {
+        particlesArray.splice(i, 1);
+        i--; // Adjust index after removal
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Optional: Add a subtle background effect like a fading trail
+    // ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    // ctx.fillRect(0,0,canvas.width, canvas.height);
+    handleParticles();
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  window.addEventListener('resize', function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+</body>
+</html>
