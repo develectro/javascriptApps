@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch the Mouse</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    overflow: hidden; /* Prevent scrollbars if mouse goes to edge */
+  }
+  #gameArea {
+    width: 90vw;
+    height: 70vh;
+    max-width: 800px;
+    max-height: 600px;
+    border: 2px solid #333;
+    position: relative;
+    background-color: #fff;
+    cursor: crosshair;
+    overflow: hidden; /* Keep mouse inside */
+  }
+  #mouse {
+    width: 40px;
+    height: 40px;
+    background-color: #555;
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.1s ease-out; /* Smooth appearance/disappearance */
+    display: none; /* Hidden initially */
+    /* Simple mouse look */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  }
+  #mouse::before { /* Ears */
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #444;
+    border-radius: 50%;
+    top: -5px;
+    left: 2px;
+  }
+  #mouse::after { /* Ears */
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #444;
+    border-radius: 50%;
+    top: -5px;
+    right: 2px;
+  }
+  #ui {
+    margin-top: 20px;
+    font-size: 1.2em;
+    text-align: center;
+  }
+  #ui p {
+    margin: 5px 0;
+  }
+  #gameOverScreen, #startScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 10;
+  }
+  #gameOverScreen h2, #startScreen h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  #gameOverScreen p, #startScreen p {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+
+<div id="startScreen">
+  <h2>Catch the Mouse!</h2>
+  <p>Click the mouse before time runs out.</p>
+  <button id="startButton">Start Game</button>
+</div>
+
+<div id="gameArea" style="display:none;">
+  <div id="mouse"></div>
+</div>
+
+<div id="ui" style="display:none;">
+  <p>Score: <span id="score">0</span></p>
+  <p>Level: <span id="level">1</span></p>
+  <p>Time Left: <span id="timeLeft">10</span>s</p>
+</div>
+
+<div id="gameOverScreen" style="display:none;">
+  <h2>Game Over!</h2>
+  <p>Final Score: <span id="finalScore">0</span></p>
+  <button id="restartButton">Play Again</button>
+</div>
+
+<script>
+  const gameArea = document.getElementById('gameArea');
+  const mouseElement = document.getElementById('mouse');
+  const scoreDisplay = document.getElementById('score');
+  const levelDisplay = document.getElementById('level');
+  const timeLeftDisplay = document.getElementById('timeLeft');
+  const startScreen = document.getElementById('startScreen');
+  const gameOverScreen = document.getElementById('gameOverScreen');
+  const finalScoreDisplay = document.getElementById('finalScore');
+  const startButton = document.getElementById('startButton');
+  const restartButton = document.getElementById('restartButton');
+  const uiDisplay = document.getElementById('ui');
+
+  let score = 0;
+  let level = 1;
+  let timeLeft = 10; // Initial time for level 1
+  let gameTimerInterval;
+  let mouseMoveInterval;
+  let gameActive = false;
+
+  const BASE_TIME_PER_LEVEL = 10; // seconds
+  const TIME_DECREASE_PER_LEVEL = 0.75; // seconds
+  const MIN_TIME_PER_LEVEL = 3; // seconds
+
+  const BASE_MOUSE_INTERVAL = 2000; // ms
+  const MOUSE_INTERVAL_DECREASE_PER_LEVEL = 150; // ms
+  const MIN_MOUSE_INTERVAL = 500; // ms
+  const BASE_MOUSE_SIZE = 40; // px
+  const MOUSE_SIZE_DECREASE_PER_LEVEL = 2; // px
+  const MIN_MOUSE_SIZE = 20; // px
+
+
+  function updateDisplay() {
+    scoreDisplay.textContent = score;
+    levelDisplay.textContent = level;
+    timeLeftDisplay.textContent = timeLeft;
+  }
+
+  function getRandomPosition() {
+    const gameAreaRect = gameArea.getBoundingClientRect();
+    const mouseSize = parseInt(mouseElement.style.width) || BASE_MOUSE_SIZE;
+
+    // Ensure mouse is fully within bounds
+    const maxX = gameAreaRect.width - mouseSize;
+    const maxY = gameAreaRect.height - mouseSize;
+
+    const x = Math.max(0, Math.floor(Math.random() * maxX));
+    const y = Math.max(0, Math.floor(Math.random() * maxY));
+    return { x, y };
+  }
+
+  function moveMouse() {
+    if (!gameActive) return;
+    const pos = getRandomPosition();
+    mouseElement.style.left = pos.x + 'px';
+    mouseElement.style.top = pos.y + 'px';
+    mouseElement.style.display = 'block';
+  }
+
+  function calculateLevelTime() {
+    return Math.max(MIN_TIME_PER_LEVEL, BASE_TIME_PER_LEVEL - (level - 1) * TIME_DECREASE_PER_LEVEL);
+  }
+
+  function calculateMouseMoveInterval() {
+    return Math.max(MIN_MOUSE_INTERVAL, BASE_MOUSE_INTERVAL - (level - 1) * MOUSE_INTERVAL_DECREASE_PER_LEVEL);
+  }
+
+  function calculateMouseSize() {
+    const newSize = Math.max(MIN_MOUSE_SIZE, BASE_MOUSE_SIZE - (level - 1) * MOUSE_SIZE_DECREASE_PER_LEVEL);
+    mouseElement.style.width = newSize + 'px';
+    mouseElement.style.height = newSize + 'px';
+  }
+
+  function startLevel() {
+    timeLeft = Math.ceil(calculateLevelTime());
+    calculateMouseSize();
+    updateDisplay();
+    moveMouse(); // Initial mouse placement
+
+    clearInterval(mouseMoveInterval);
+    mouseMoveInterval = setInterval(moveMouse, calculateMouseMoveInterval());
+
+    clearInterval(gameTimerInterval);
+    gameTimerInterval = setInterval(() => {
+      timeLeft--;
+      updateDisplay();
+      if (timeLeft <= 0) {
+        gameOver();
+      }
+    }, 1000);
+  }
+
+  function nextLevel() {
+    level++;
+    score += 10 * (level -1) ; // More points for higher levels
+    mouseElement.style.display = 'none'; // Hide mouse briefly
+    startLevel();
+  }
+
+  function catchMouse() {
+    if (!gameActive || mouseElement.style.display === 'none') return;
+    score += 10; // Base score for a catch
+    nextLevel();
+  }
+
+  function gameOver() {
+    gameActive = false;
+    clearInterval(gameTimerInterval);
+    clearInterval(mouseMoveInterval);
+    mouseElement.style.display = 'none';
+    finalScoreDisplay.textContent = score;
+    gameOverScreen.style.display = 'flex';
+    gameArea.style.display = 'none';
+    uiDisplay.style.display = 'none';
+  }
+
+  function startGame() {
+    score = 0;
+    level = 1;
+    gameActive = true;
+    startScreen.style.display = 'none';
+    gameOverScreen.style.display = 'none';
+    gameArea.style.display = 'block';
+    uiDisplay.style.display = 'block';
+    mouseElement.style.display = 'block'; // Make sure it's visible for the first move
+    startLevel();
+  }
+
+  mouseElement.addEventListener('click', catchMouse);
+  startButton.addEventListener('click', startGame);
+  restartButton.addEventListener('click', startGame);
+
+  // Initial setup
+  updateDisplay(); // Show initial values even if 0
+</script>
+
+</body>
+</html>
