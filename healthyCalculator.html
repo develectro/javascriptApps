@@ -1,0 +1,363 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <!-- This is AI Generated Code -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Wellness Calculator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #f0f4f8; /* Light, calming blue-gray */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px; /* Optimal width for readability */
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1a73e8; /* A friendly, trustworthy blue */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .calculator-section {
+            background-color: #f8f9fa; /* Slightly off-white for sections */
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .calculator-section h2 {
+            color: #0056b3; /* Darker blue for section headers */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 10px;
+        }
+
+        .calculator-section p {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="number"],
+        input[type="time"] {
+            width: calc(100% - 24px); /* Full width minus padding */
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        input[type="number"]:focus,
+        input[type="time"]:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.25);
+            outline: none;
+        }
+
+        button {
+            background-color: #28a745; /* Green for positive action */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        .result-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef; /* Light gray for results */
+            border-left: 5px solid #1a73e8; /* Accent border */
+            border-radius: 4px;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .result-display.error {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        .disclaimer {
+            font-size: 0.85em;
+            color: #6c757d; /* Muted color for disclaimer */
+            margin-top: 15px;
+            font-style: italic;
+        }
+    </style>
+ </head>
+ <body>
+    <div class="container">
+        <h1>Health & Wellness Calculator</h1>
+
+        <!-- Healthy Weight Section -->
+        <section id="healthy-weight-calculator" class="calculator-section">
+            <h2>Healthy Weight Calculator</h2>
+            <p><em>Calculates a general healthy weight range for adults (18+ years) based on the Body Mass Index (BMI). For children and adolescents, BMI interpretation requires age and gender-specific percentile charts; consult a pediatrician.</em></p>
+            <div>
+                <label for="hw-age">Age (years):</label>
+                <input type="number" id="hw-age" min="1" placeholder="e.g., 30">
+            </div>
+            <div>
+                <label for="hw-height">Height (cm):</label>
+                <input type="number" id="hw-height" min="50" placeholder="e.g., 170">
+            </div>
+            <button id="calculate-hw">Calculate Healthy Weight</button>
+            <div id="hw-result" class="result-display" style="display:none;"></div>
+        </section>
+
+        <!-- Sleep Calculator Section -->
+        <section id="sleep-calculator" class="calculator-section">
+            <h2>Sleep Calculator</h2>
+            <p><em>Calculates recommended sleep duration based on age and suggests a bedtime if you provide a desired wake-up time.</em></p>
+            <div>
+                <label for="sleep-age">Age (years):</label>
+                <input type="number" id="sleep-age" min="0" placeholder="e.g., 25">
+            </div>
+            <div>
+                <label for="wake-up-time">Desired Wake-up Time:</label>
+                <input type="time" id="wake-up-time" value="07:00">
+            </div>
+            <button id="calculate-sleep">Calculate Sleep Needs</button>
+            <div id="sleep-result" class="result-display" style="display:none;"></div>
+        </section>
+
+        <!-- Blood Pressure Calculator Section -->
+        <section id="bp-calculator" class="calculator-section">
+            <h2>Blood Pressure Range Calculator</h2>
+            <p><em>Provides general information on typical blood pressure ranges by age. This is not medical advice.</em></p>
+            <div>
+                <label for="bp-age">Age (years):</label>
+                <input type="number" id="bp-age" min="1" placeholder="e.g., 45">
+            </div>
+            <button id="calculate-bp">Calculate Blood Pressure Range</button>
+            <div id="bp-result" class="result-display" style="display:none;"></div>
+            <p class="disclaimer"><em>Disclaimer: These are general guidelines. Blood pressure can vary based on many factors. Always consult a healthcare professional for medical advice, diagnosis, and accurate assessments.</em></p>
+        </section>
+
+        <!-- Daily Walk Calculator Section -->
+        <section id="walk-calculator" class="calculator-section">
+            <h2>Daily Walk Recommendation</h2>
+            <p><em>Provides general daily walking recommendations based on age, including an approximate distance in kilometers (assuming an average step length of 0.762 meters). These are not strict medical guidelines.</em></p>
+            <div>
+                <label for="walk-age">Age (years):</label>
+                <input type="number" id="walk-age" min="1" placeholder="e.g., 35">
+            </div>
+            <button id="calculate-walk">Calculate Walk Recommendation</button>
+            <div id="walk-result" class="result-display" style="display:none;"></div>
+            <p class="disclaimer"><em>Disclaimer: These are general activity suggestions. Consult with a healthcare professional before starting any new exercise program, especially if you have underlying health conditions.</em></p>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Healthy Weight Calculator ---
+            const calculateHwButton = document.getElementById('calculate-hw');
+            const hwAgeInput = document.getElementById('hw-age');
+            const hwHeightInput = document.getElementById('hw-height');
+            const hwResultDiv = document.getElementById('hw-result');
+
+            calculateHwButton.addEventListener('click', () => {
+                const age = parseInt(hwAgeInput.value);
+                const heightCm = parseFloat(hwHeightInput.value);
+                hwResultDiv.style.display = 'block';
+                hwResultDiv.classList.remove('error');
+
+                if (isNaN(age) || age <= 0 || isNaN(heightCm) || heightCm <= 50) {
+                    hwResultDiv.textContent = 'Please enter valid age and height.';
+                    hwResultDiv.classList.add('error');
+                    return;
+                }
+
+                if (age < 18) {
+                    hwResultDiv.innerHTML = `For individuals under 18, BMI is interpreted using age and gender-specific percentile charts. <br>It's best to consult a pediatrician for healthy weight assessments.`;
+                } else {
+                    const heightM = heightCm / 100;
+                    const minBmi = 18.5;
+                    const maxBmi = 24.9;
+                    const minWeight = minBmi * (heightM * heightM);
+                    const maxWeight = maxBmi * (heightM * heightM);
+                    hwResultDiv.innerHTML = `For an adult aged ${age} with height ${heightCm} cm, a general healthy weight range is approximately: <br><b>${minWeight.toFixed(1)} kg - ${maxWeight.toFixed(1)} kg</b>. <br><small>This is based on a BMI of ${minBmi}-${maxBmi}.</small>`;
+                }
+            });
+
+            // --- Sleep Calculator ---
+            const calculateSleepButton = document.getElementById('calculate-sleep');
+            const sleepAgeInput = document.getElementById('sleep-age');
+            const wakeUpTimeInput = document.getElementById('wake-up-time');
+            const sleepResultDiv = document.getElementById('sleep-result');
+
+            calculateSleepButton.addEventListener('click', () => {
+                const age = parseInt(sleepAgeInput.value);
+                const wakeUpTimeValue = wakeUpTimeInput.value; // "HH:MM"
+                sleepResultDiv.style.display = 'block';
+                sleepResultDiv.classList.remove('error');
+
+                if (isNaN(age) || age < 0) {
+                    sleepResultDiv.textContent = 'Please enter a valid age.';
+                    sleepResultDiv.classList.add('error');
+                    return;
+                }
+                if (!wakeUpTimeValue) {
+                    sleepResultDiv.textContent = 'Please enter a desired wake-up time.';
+                    sleepResultDiv.classList.add('error');
+                    return;
+                }
+
+                let recommendedHours = "";
+                if (age <= 0.25) recommendedHours = "14-17 hours (Newborn 0-3 months)";
+                else if (age < 1) recommendedHours = "12-16 hours (Infant 4-11 months)";
+                else if (age <= 2) recommendedHours = "11-14 hours (Toddler 1-2 years)";
+                else if (age <= 5) recommendedHours = "10-13 hours (Preschool 3-5 years)";
+                else if (age <= 12) recommendedHours = "9-12 hours (School age 6-12 years)"; // Adjusted CDC/AASM
+                else if (age <= 17) recommendedHours = "8-10 hours (Teen 13-17 years)";
+                else if (age <= 64) recommendedHours = "7-9 hours (Adult 18-64 years)";
+                else recommendedHours = "7-8 hours (Older Adult 65+ years)";
+
+                let resultText = `Recommended sleep for age ${age}: <b>${recommendedHours}</b>.`;
+
+                // Calculate bedtime
+                const [hoursStr, minutesStr] = wakeUpTimeValue.split(':');
+                const wakeUpHours = parseInt(hoursStr);
+                const wakeUpMinutes = parseInt(minutesStr);
+
+                // Assuming the lower end of the recommended sleep range for bedtime calculation
+                let sleepDurationHours = parseFloat(recommendedHours.split('-')[0]); 
+                if (isNaN(sleepDurationHours) && recommendedHours.includes("hours")) { // handles single value like "7-9 hours"
+                     sleepDurationHours = parseFloat(recommendedHours.split(' ')[0]); // If it's "X hours"
+                }
+                 if (isNaN(sleepDurationHours)) sleepDurationHours = 7; // Default if parsing fails
+
+
+                let bedtimeHours = wakeUpHours - sleepDurationHours;
+                let bedtimeMinutes = wakeUpMinutes;
+
+                if (bedtimeMinutes < 0) { // Should not happen with current logic but good for robustness
+                    bedtimeMinutes += 60;
+                    bedtimeHours--;
+                }
+                if (bedtimeHours < 0) {
+                    bedtimeHours += 24; // Went past midnight
+                }
+
+                const formattedBedtime = `${String(bedtimeHours).padStart(2, '0')}:${String(bedtimeMinutes).padStart(2, '0')}`;
+                resultText += `<br>To get approximately ${sleepDurationHours} hours of sleep and wake up at ${wakeUpTimeValue}, a suggested bedtime is around <b>${formattedBedtime}</b>.`;
+
+                sleepResultDiv.innerHTML = resultText;
+            });
+
+            // --- Blood Pressure Calculator ---
+            const calculateBpButton = document.getElementById('calculate-bp');
+            const bpAgeInput = document.getElementById('bp-age');
+            const bpResultDiv = document.getElementById('bp-result');
+
+            calculateBpButton.addEventListener('click', () => {
+                const age = parseInt(bpAgeInput.value);
+                bpResultDiv.style.display = 'block';
+                bpResultDiv.classList.remove('error');
+
+                if (isNaN(age) || age <= 0) {
+                    bpResultDiv.textContent = 'Please enter a valid age.';
+                    bpResultDiv.classList.add('error');
+                    return;
+                }
+
+                let bpRange = "";
+                if (age <= 12) {
+                    bpRange = "For children (1-12 years): Blood pressure varies significantly with age, height, and gender. <b>Consult a pediatrician for accurate ranges.</b> General example for a 5-year-old might be Systolic 95-105 mmHg, Diastolic 55-65 mmHg.";
+                } else if (age <= 17) {
+                    bpRange = "For teens (13-17 years): Ideal is less than 120/80 mmHg. A general acceptable range can be Systolic <b>90-120 mmHg</b>, Diastolic <b>60-80 mmHg</b>.";
+                } else if (age <= 64) {
+                    bpRange = "For adults (18-64 years): Ideal is less than 120/80 mmHg. A general acceptable range can be Systolic <b>90-130 mmHg</b>, Diastolic <b>60-85 mmHg</b>. Elevated: 120-129/less than 80. Hypertension Stage 1: 130-139/80-89.";
+                } else { // 65+
+                    bpRange = "For older adults (65+ years): Target often less than 130/80 mmHg (consult doctor, as individual targets vary). A general acceptable range can be Systolic <b>90-140 mmHg</b>, Diastolic <b>60-90 mmHg</b>. Higher readings require medical attention.";
+                }
+                bpResultDiv.innerHTML = `For age ${age}: <br>${bpRange}`;
+            });
+
+            // --- Daily Walk Calculator ---
+            const calculateWalkButton = document.getElementById('calculate-walk');
+            const walkAgeInput = document.getElementById('walk-age');
+            const walkResultDiv = document.getElementById('walk-result');
+
+            const METERS_PER_STEP = 0.762;
+
+            calculateWalkButton.addEventListener('click', () => {
+                const age = parseInt(walkAgeInput.value);
+                walkResultDiv.style.display = 'block';
+                walkResultDiv.classList.remove('error');
+
+                if (isNaN(age) || age <= 0) {
+                    walkResultDiv.textContent = 'Please enter a valid age.';
+                    walkResultDiv.classList.add('error');
+                    return;
+                }
+
+                let walkRecommendation = "";
+                let distanceText = "";
+
+                if (age < 6) {
+                    walkRecommendation = "For young children (under 6 years): Focus on active play throughout the day. Specific step counts are less relevant than overall movement and development.";
+                } else if (age <= 17) {
+                    const minSteps = 10000;
+                    const maxSteps = 12000;
+                    const minDistKm = (minSteps * METERS_PER_STEP / 1000).toFixed(2);
+                    const maxDistKm = (maxSteps * METERS_PER_STEP / 1000).toFixed(2);
+                    distanceText = `(approx. <b>${minDistKm} - ${maxDistKm} km</b>)`;
+                    walkRecommendation = `For children and teens (6-17 years): Aim for at least 60 minutes of moderate-to-vigorous physical activity daily. This often translates to <b>${minSteps.toLocaleString()}-${maxSteps.toLocaleString()} steps per day</b> ${distanceText}. Encourage varied activities.`;
+                } else if (age <= 64) {
+                    const minSteps = 7000;
+                    const maxSteps = 10000;
+                    const minDistKm = (minSteps * METERS_PER_STEP / 1000).toFixed(2);
+                    const maxDistKm = (maxSteps * METERS_PER_STEP / 1000).toFixed(2);
+                    distanceText = `(approx. <b>${minDistKm} - ${maxDistKm} km</b>)`;
+                    walkRecommendation = `For adults (18-64 years): Aim for <b>${minSteps.toLocaleString()}-${maxSteps.toLocaleString()} steps per day</b> ${distanceText} or at least 150 minutes of moderate-intensity aerobic activity per week. Consistency is key.`;
+                } else { // 65+
+                    const minSteps = 5000;
+                    const maxSteps = 7500;
+                    const minDistKm = (minSteps * METERS_PER_STEP / 1000).toFixed(2);
+                    const maxDistKm = (maxSteps * METERS_PER_STEP / 1000).toFixed(2);
+                    distanceText = `(approx. <b>${minDistKm} - ${maxDistKm} km</b>)`;
+                    walkRecommendation = `For older adults (65+ years): Aim for <b>${minSteps.toLocaleString()}-${maxSteps.toLocaleString()} steps per day</b> ${distanceText}, or as tolerated. Maintaining mobility is important. Consult a doctor for personalized advice based on health status.`;
+                }
+                walkResultDiv.innerHTML = `For age ${age}:<br>${walkRecommendation}`;
+            });
+        });
+    </script>
+ </body>
+ </html>
