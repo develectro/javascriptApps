@@ -1,0 +1,162 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    background-color: #f0f0f0;
+    padding-top: 20px;
+}
+
+.game-board {
+    display: grid;
+    /* 5 columns, each 40px wide */
+    grid-template-columns: repeat(5, 40px);
+    /* 5 rows, each 40px high (can be inferred if all cells are same height) */
+    /* grid-template-rows: repeat(5, 40px); */
+    
+    /* Gap between cells */
+    grid-gap: 2px;
+    
+    /* Border around the board */
+    border: 3px solid #333;
+    background-color: #555; /* Color for the gaps */
+
+    /* Explicit size for the board including gaps */
+    /* Width = (5 cells * 40px/cell) + (4 gaps * 2px/gap) = 200px + 8px = 208px */
+    /* Height = (5 cells * 40px/cell) + (4 gaps * 2px/gap) = 200px + 8px = 208px */
+    width: 208px; 
+    height: 208px;
+    margin-top: 20px;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    position: relative; /* For positioning pseudo-elements */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Game Element Styles */
+
+.wall {
+    background-color: #2c3e50; /* Dark blue-grey */
+    /* Optional: add some texture with box-shadow or gradient */
+    /* box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); */
+}
+
+.empty {
+    background-color: #ecf0f1; /* Light grey */
+    /* Optional: subtle border to distinguish empty cells */
+    /* border: 1px solid #bdc3c7; */
+}
+
+.player {
+    /* The cell itself is the player's space, draw player inside */
+    background-color: #ecf0f1; /* Match empty cell background */
+}
+.player::after { /* The actual player shape */
+    content: '';
+    display: block;
+    width: 70%; /* 28px */
+    height: 70%; /* 28px */
+    background-color: #3498db; /* Blue player */
+    border-radius: 50%; /* Circular player */
+    margin: auto; /* Center in the cell */
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.block {
+    background-color: #A0522D; /* Sienna - woody color */
+    border: 2px solid #8B4513; /* SaddleBrown border */
+    box-shadow: inset 1px 1px 3px rgba(255,255,255,0.3), 
+                inset -1px -1px 3px rgba(0,0,0,0.2); /* Simple 3D effect */
+}
+
+.cat {
+    background-color: #e74c3c; /* Red cat body */
+    border-radius: 15% 15% 30% 30%; /* Cat-like body shape */
+    position: relative; /* For ears and other pseudo-elements */
+    /* Combined shadows: general outer glow + eyes */
+    /* Format: offset-x offset-y blur spread color */
+    box-shadow:
+        0 0 5px rgba(0,0,0,0.3), /* General outer glow */
+        /* Left eye (white part) */
+        -6px -2px 0 0px white,
+        /* Right eye (white part) */
+        6px -2px 0 0px white,
+        /* Left pupil (black part) */
+        -6px -2px 0 1px black, /* Slightly smaller black circle on white */
+        /* Right pupil (black part) */
+        6px -2px 0 1px black;  /* Slightly smaller black circle on white */
+}
+
+.cat::before, .cat::after { /* Ears */
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;   /* Base of the ear triangle */
+    border-right: 7px solid transparent;  /* Base of the ear triangle */
+    border-bottom: 10px solid #c0392b; /* Darker red, height & color of ear */
+    top: -3px; /* Position ears slightly above the main body */
+}
+
+.cat::before { /* Left ear */
+    left: 5px; 
+    transform: rotate(-25deg);
+}
+
+.cat::after { /* Right ear */
+    right: 5px; 
+    transform: rotate(25deg);
+}
+
+
+.cheese {
+    background-color: #f1c40f; /* Yellow cheese */
+    border-radius: 10px; /* Slightly rounded square */
+    position: relative; /* For holes */
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.cheese::before { /* Hole 1 */
+    content: '';
+    position: absolute;
+    top: 7px; left: 7px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #dcb21a; /* Darker yellow for hole "depth" */
+    box-shadow: inset 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.cheese::after { /* Hole 2 */
+    content: '';
+    position: absolute;
+    bottom: 8px; right: 10px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #dcb21a; /* Darker yellow for hole "depth" */
+    box-shadow: inset 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.trapped-cat {
+    background-color: #A0522D; /* Same as block */
+    border: 2px solid #8B4513; /* Same as block */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trapped-cat::after { /* Faint cat representation inside */
+    content: '';
+    width: 60%; /* 24px */
+    height: 60%; /* 24px */
+    background-color: #e74c3c; /* Cat color */
+    opacity: 0.5; /* Faint */
+    border-radius: 15% 15% 30% 30%; /* Match cat's rounding */
+}
