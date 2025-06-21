@@ -1,0 +1,104 @@
+:root {
+    --bg-color: #f0f0f0;
+    --text-color: #333;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --border-color: #ccc;
+    --table-bg: #fff;
+    --table-line-color: #e0e0e0;
+    --player-paddle-color: #007bff;
+    --bot-paddle-color: #dc3545;
+    --puck-color: #212529;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --primary-color: #00aaff;
+    --secondary-color: #adb5bd;
+    --border-color: #444;
+    --table-bg: #2c2c2c;
+    --table-line-color: #444;
+    --player-paddle-color: #00aaff;
+    --bot-paddle-color: #ff4757;
+    --puck-color: #f5f6fa;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.game-container {
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.controls button {
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.controls button:hover {
+    opacity: 0.9;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.score {
+    display: flex;
+    flex-direction: column;
+}
+
+.score span:first-child {
+    font-size: 1rem;
+    color: var(--secondary-color);
+}
+
+#player-score {
+    color: var(--player-paddle-color);
+}
+
+#bot-score {
+    color: var(--bot-paddle-color);
+}
+
+canvas {
+    background-color: var(--table-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    cursor: none; /* Hide cursor over canvas */
+}
