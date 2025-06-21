@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cup Guessing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .cups-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .cup {
+            width: 100px;
+            height: 120px;
+            background-color: #deb887; /* Burlywood */
+            border-bottom: 10px solid #8b4513; /* SaddleBrown */
+            border-radius: 10px 10px 50% 50% / 10px 10px 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .cup:hover {
+            transform: translateY(-10px);
+        }
+        .cup.has-piece {
+            /* Style for when the piece is revealed (optional, can be done via JS text) */
+        }
+        .cup.lifted {
+            background-color: #f5deb3; /* Wheat - to simulate being lifted */
+            transform: translateY(-20px) rotateX(30deg);
+        }
+        #message {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>3 Cup Guessing Game</h1>
+    <div id="message">Click "Start Game" to begin!</div>
+    <div class="cups-container">
+        <div class="cup" id="cup1" onclick="selectCup(0)"></div>
+        <div class="cup" id="cup2" onclick="selectCup(1)"></div>
+        <div class="cup" id="cup3" onclick="selectCup(2)"></div>
+    </div>
+    <button onclick="startGame()">Start Game / Play Again</button>
+
+    <script>
+        let pieceLocation = -1;
+        let gameActive = false;
+        const cups = document.querySelectorAll('.cup');
+        const messageEl = document.getElementById('message');
+
+        function startGame() {
+            pieceLocation = Math.floor(Math.random() * 3);
+            gameActive = true;
+            messageEl.textContent = "Guess which cup has the piece!";
+            cups.forEach(cup => {
+                cup.textContent = '';
+                cup.classList.remove('lifted', 'has-piece');
+            });
+        }
+
+        function selectCup(index) {
+            if (!gameActive) return;
+            gameActive = false;
+            cups[index].classList.add('lifted');
+            if (index === pieceLocation) {
+                cups[index].textContent = '💎'; // Represents the piece
+                cups[index].classList.add('has-piece');
+                messageEl.textContent = "You found it! 🎉";
+            } else {
+                cups[pieceLocation].textContent = '💎';
+                cups[pieceLocation].classList.add('lifted'); // Show where it was
+                messageEl.textContent = "Wrong cup! Try again.";
+            }
+        }
+
+        // Optional: Start game on load
+        // startGame();
+    </script>
+</body>
+</html> 
