@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    <title>Friendly Password Checker</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --primary-color: #007bff;
+            --border-color: #d1d5db;
+            --very-weak: #dc3545;
+            --weak: #fd7e14;
+            --medium: #ffc107;
+            --strong: #28a745;
+            --very-strong: #208338;
+            --unchecked-color: #6c757d;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem; /* Add padding for small screens */
+            box-sizing: border-box;
+        }
+
+        .container {
+            position: relative; /* For theme toggle positioning */
+            background-color: var(--container-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.75rem;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        #password-input {
+            width: 100%;
+            padding: 0.75rem;
+            padding-right: 3rem; /* Space for the icon */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--container-bg);
+        }
+
+        #toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            font-size: 1.2rem;
+            color: var(--unchecked-color);
+        }
+
+        #theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.3s ease-in-out, transform 0.3s ease;
+            padding: 0;
+        }
+
+        .strength-meter-container {
+            height: 10px;
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        #strength-meter {
+            height: 100%;
+            width: 0;
+            background-color: var(--very-weak);
+            transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+
+        #strength-text {
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            min-height: 1.2em; /* Prevent layout shift */
+        }
+
+        #criteria-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        #criteria-list li {
+            margin-bottom: 0.5rem;
+            color: var(--unchecked-color);
+            transition: color 0.3s ease-in-out;
+        }
+
+        #criteria-list li.checked {
+            color: var(--text-color);
+        }
+
+        #criteria-list li::before {
+            content: '✗';
+            color: var(--very-weak);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        #criteria-list li.checked::before {
+            content: '✓';
+            color: var(--strong);
+        }
+
+        /* --- Dark Theme --- */
+        body[data-theme='dark'] {
+            --bg-color: #1a1a2e;
+            --container-bg: #2a2a3e;
+            --text-color: #e0e0e0;
+            --border-color: #4a4a6a;
+            --unchecked-color: #8c8ca1;
+        }
+
+        body[data-theme='dark'] #password-input {
+            color: var(--text-color);
+        }
+
+        body[data-theme='dark'] #password-input::placeholder {
+            color: var(--unchecked-color);
+        }
+
+        footer {
+            width: 100%;
+            max-width: 400px; /* Match container width */
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--container-bg);
+            border-radius: 12px; /* Match container corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Match container shadow */
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="theme-toggle" title="Toggle dark mode">🌙</button>
+
+        <h1>How Secure is Your Password?</h1>
+        <p>Enter a password to see how strong it is.</p>
+        <div class="input-container">
+            <input type="password" id="password-input" placeholder="Type your password here..." aria-label="Password Input">
+            <span id="toggle-password" title="Show/Hide Password">👁️</span>
+        </div>
+        <div class="strength-meter-container">
+            <div id="strength-meter"></div>
+        </div>
+        <div id="strength-text"></div>
+        <ul id="criteria-list">
+            <li id="length">At least 12 characters long</li>
+            <li id="lowercase">Has a lowercase letter (a-z)</li>
+            <li id="uppercase">Has an uppercase letter (A-Z)</li>
+            <li id="number">Has a number (0-9)</li>
+            <li id="special">Has a special character (!@#$...)</li>
+        </ul>
+    </div>
+    <footer>
+        made with ☕ by sperkdev
+    </footer>
+
+    <script>
+        // --- Element Selectors ---
+        const body = document.body;
+        const passwordInput = document.getElementById('password-input');
+        const togglePassword = document.getElementById('toggle-password');
+        const strengthMeter = document.getElementById('strength-meter');
+        const strengthText = document.getElementById('strength-text');
+        
+        const criteria = {
+            length: document.getElementById('length'),
+            lowercase: document.getElementById('lowercase'),
+            uppercase: document.getElementById('uppercase'),
+            number: document.getElementById('number'),
+            special: document.getElementById('special'),
+        };
+
+        // --- Strength Logic ---
+        const strengthLevels = {
+            0: { text: "", color: "transparent", width: "0%" },
+            1: { text: "Very Weak", color: "var(--very-weak)", width: "20%" },
+            2: { text: "Weak", color: "var(--weak)", width: "40%" },
+            3: { text: "Medium", color: "var(--medium)", width: "60%" },
+            4: { text: "Strong", color: "var(--strong)", width: "80%" },
+            5: { text: "Very Strong", color: "var(--very-strong)", width: "100%" },
+        };
+
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let score = 0;
+
+            // Update criteria checks
+            const checks = {
+                length: password.length >= 12,
+                lowercase: /[a-z]/.test(password),
+                uppercase: /[A-Z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password),
+            };
+
+            for (const key in checks) {
+                if (checks[key]) {
+                    score++;
+                    criteria[key].classList.add('checked');
+                } else {
+                    criteria[key].classList.remove('checked');
+                }
+            }
+            
+            // Update strength meter and text
+            const level = strengthLevels[score] || strengthLevels[0];
+            strengthMeter.style.width = level.width;
+            strengthMeter.style.backgroundColor = level.color;
+            strengthText.textContent = password.length > 0 ? level.text : "";
+        });
+
+        togglePassword.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            togglePassword.textContent = isPassword ? '🙈' : '👁️';
+        });
+
+        // --- Theme Toggle Logic ---
+        const themeToggle = document.getElementById('theme-toggle');
+
+        const setAppTheme = (theme) => {
+            if (theme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        };
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            setAppTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        // Apply saved or system theme on initial load
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setAppTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+    </script>
+</body>
+</html>
